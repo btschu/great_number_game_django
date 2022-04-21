@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Great Number Game</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js" integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/" crossorigin="anonymous"></script>
+</head>
+<body>
+    <main role="main">
+        <section class="jumbotron text-center">
+            <div class="container">
+                <h1 class="jumbotron-heading m-5">Welcome to the Great Number Game!</h1>
+                <p class="lead">Pick a number between 1 and 100</p>
+                <form class="container bg-dark w-25 p-lg-3 rounded" action="/guess" method="post">
+                    {% csrf_token %}
+                    <label for="guess" class="form-label text-light">Take a Guess!!!</label>
+                    <input type="number" class="form-control mb-3 text-center" id="formGroupExampleInput" name="guess" placeholder="1-100">
+                    {% if request.session.numTries < 5 or request.session.guess != request.session.randomNum %}
+                        <input type='submit' value='Guess' class="btn btn-primary">
+                    {% endif %}
+                </form>
+                {% if request.session.guess < request.session.randomNum and request.session.guess != -1 %}
+                    <div class="bg-danger m-5 lowbox col-md-8 mx-auto">
+                        <h1>Too Low!</h1>
+                    </div>
+                {% elif request.session.guess > request.session.randomNum %}
+                    <div class="bg-danger m-5 lowbox col-md-8 mx-auto">
+                        <h1>Too High!</h1>
+                    </div>
+                {% elif request.session.guess == request.session.randomNum %}
+                    <div class="bg-success m-5 p-2 lowbox col-md-8 mx-auto">
+                        <h1>Perfect!</h1>
+                        <p>{{request.session.randomNum}} was the number!</p>
+                        <a class="btn btn-dark" href="/play_again">Play Again</a>
+                    </div>
+                {% endif %}
+                {% if request.session.numTries > 4 %}
+                    <div class="bg-danger m-5 p-2 lowbox col-md-8 mx-auto">
+                        <h1>You Lose!</h1>
+                        <p>{{request.session.randomNum}} was the number!</p>
+                        <a class="btn btn-dark" href="/play_again">Play Again</a>
+                    </div>
+                {% endif %}
+            </div>
+        </section>
+    </main>
+</body>
+</html>
